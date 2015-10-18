@@ -717,10 +717,10 @@ get_shader_id_by_glslsbid(const char *glslsbid)
 
   i = 0;
   s = glslsandbox_shaders_g;
-  while (s[i].nick != NULL && ((id != s[i].id) || (rev != s[i].rev)) )
+  while (s[i].id != NULL && (!strcmp(s[i].id, glslsbid)) )
     ++i;
 
-  if (s[i].nick == NULL)
+  if (s[i].id == NULL)
     return (-1);
 
   return (i);
@@ -762,7 +762,7 @@ list_shaders(FILE *fp)
       int ln;
       int st;
       get_line_counts(s[i].frag, &ln, &st);
-      fprintf(fp, "%i\t%6i.%-3i\t%-24s\t%i\t%i\n", i, s[i].id, s[i].rev, s[i].nick,
+      fprintf(fp, "%i\t%-8s\t%-24s\t%i\t%i\n", i, s[i].id, s[i].nick,
               ln, st);
   }
 }
@@ -773,15 +773,13 @@ list_shaders_urls(FILE *fp)
 {
   const glslsandbox_shaders_t *s;
   int i;
-  char id[12];
 
   fprintf(fp, "# Builtin shader URL list:\n");
   fprintf(fp, "#\n");
 
   s = glslsandbox_shaders_g;
-  for (i = 0; s[i].nick != NULL; ++i) {
-    snprintf(id, sizeof (id), "%i.%i", s[i].id, s[i].rev);
-    fprintf(fp, "http://glslsandbox.com/e#%-14s\t%s\n", id, s[i].nick);
+  for (i = 0; s[i].id != NULL; ++i) {
+    fprintf(fp, "http://glslsandbox.com/e#%-14s\t%s\n", s[i].id, s[i].nick);
   }
 }
 
@@ -1450,14 +1448,12 @@ main(int argc, char *argv[])
     fprintf_gles_info(stderr, ctx->verbose);
 
     if (is_using_builtin_shader(ctx)) {
-      fprintf(stderr, "Running shader \"%s\" (GLSL Sandbox ID: %i.%i, builtin ID: %i)\n",
+      fprintf(stderr, "Running shader \"%s\" (GLSL Sandbox ID: %s, builtin ID: %i)\n",
               glslsandbox_shaders_g[ctx->run_shader].nick,
               glslsandbox_shaders_g[ctx->run_shader].id,
-              glslsandbox_shaders_g[ctx->run_shader].rev,
               ctx->run_shader);
-      fprintf(stderr, "Available online at: http://glslsandbox.com/e#%i.%i\n",
-              glslsandbox_shaders_g[ctx->run_shader].id,
-              glslsandbox_shaders_g[ctx->run_shader].rev);
+      fprintf(stderr, "Available online at: http://glslsandbox.com/e#%s\n",
+              glslsandbox_shaders_g[ctx->run_shader].id);
       fprintf(stderr, "PLEASE make sure to check original license and "
               "give credit to the original author(s).\n");
     }

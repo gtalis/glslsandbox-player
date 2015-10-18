@@ -4,22 +4,25 @@ set -e
 set -u
 
 if [[ $# -ne 1 ]] ; then
-    echo "Usage: $0 <glslsandbox-shader-id-or-url>" >&2
+    echo "Usage: $0 <shader-id-or-url>" >&2
     exit 1
 fi
 
-BASENAME="$(dirname "$0")"
-SHADER_ID="$(sed -r 's@^http://(www\.)?glslsandbox\.com/e#@@' <<< "$1")"
-URL_PREFIX="http://glslsandbox.com/item/"
-CURL="curl"
-JSON2FRAG="${BASENAME}/json2code"
-USER_AGENT="glslsandbox-player/1.0"
-SHADER_URL="${URL_PREFIX}/${SHADER_ID}"
+BASEDIR="$(dirname "$0")"
+SHADER_ID="$1"
 
-CURL_OPTS="--silent "
-CURL_OPTS+="--user-agent ${USER_AGENT}"
+GS_RE="^(http://(www\.)?glslsandbox\.com/e#)?[0-9]+\.[0-9]+$"
+ST_RE="^(https?://(www\.)?shadertoy\.com/view/)?[0-9a-zA-Z]{6}$"
 
-${CURL} ${CURL_OPTS} "${SHADER_URL}" | "${JSON2FRAG}"
+DL_PREFIX=""
 
-# Do not flood glslsandbox.com in case of a long list of download
-sleep 0.5
+if grep -Eq "${GS_RE}" <<< "${SHADER_ID}" ; then
+    DL_PREFIX="gs"
+elif grep -Eq "${ST_RE}" <<< "${SHADER_ID}" ; then
+    DL_PREFIX="st"
+else
+    echo "ERROR: Shader identifier or URL not recognized" >&2
+    exit 1
+fi
+
+exec "${BASEDIR}/${DL_PREFIX}-dl-shader" "${SHADER_ID}"

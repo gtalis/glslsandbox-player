@@ -12,8 +12,7 @@
 
 typedef struct glslsandbox_shaders_s glslsandbox_shaders_t;
 struct glslsandbox_shaders_s {
-  int id;
-  int rev;
+  const char *id;
   const char *nick;
   const char *frag;
 };
