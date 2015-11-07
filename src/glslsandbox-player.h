@@ -39,6 +39,7 @@ struct context_s {
   EGLint swap_interval;
   GLint a_pos, a_surfacePosition;
   GLint u_time, u_mouse, u_resolution, u_surfaceSize;
+  GLint u_date;
   GLint u_backbuf;
   GLuint gl_prog;
   GLuint vertex_shader;

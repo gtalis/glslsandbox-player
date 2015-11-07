@@ -19,6 +19,7 @@ precision mediump float;
 uniform float time;
 uniform vec2 mouse;
 uniform vec2 resolution;
+uniform vec4 date;
 
 #define iResolution get_iResolution()
 #define iGlobalTime get_iGlobalTime()
@@ -38,13 +39,14 @@ vec3 get_iMouse() {
 }
 
 vec4 get_iDate() {
-  return vec4(0.0);
+  return date;
 }
 
 // Protect glslsandbox uniform names
 #define time        stemu_time
 #define resolution  stemu_resolution
 #define mouse       stemu_mouse
+#define date        stemu_date
 
 // --------[ Original ShaderToy begins here ]---------- //
 END_OF_HEADER

@@ -57,6 +57,18 @@ fbo_frag_shader_g =
 ;
 
 static void
+xclock_gettime(clockid_t clk_id, struct timespec *tp)
+{
+  int ret;
+
+  ret = clock_gettime(clk_id, tp);
+  if (ret != 0) {
+      fprintf(stderr, "ERROR: clock_gettime(): error %i: %s\n", errno, strerror(errno));
+      exit(EXIT_FAILURE);
+  }
+}
+
+static void
 player_cleanup(context_t *ctx)
 {
   XglFinish();
@@ -548,6 +560,8 @@ setup(context_t *ctx)
     }
   }
 
+  ctx->u_date = XglGetUniformLocation(ctx->gl_prog, "date");
+
   XglViewport(0, 0, ctx->shader_width, ctx->shader_height);
 
   validate_shader_program(ctx);
@@ -580,6 +594,25 @@ compute_surface_position(GLfloat surfPos[8],
 }
 
 static void
+update_date_uniform(context_t *ctx)
+{
+  struct tm *t;
+  struct timespec ts;
+  GLfloat year, month, day, time;
+
+  xclock_gettime(CLOCK_REALTIME, &ts);
+
+  t = localtime(&ts.tv_sec);
+
+  year  = (GLfloat) t->tm_year;
+  month = (GLfloat) t->tm_mon;
+  day   = (GLfloat) t->tm_mday;
+  time  = (GLfloat) ((t->tm_hour * 3600) + (t->tm_min * 60) + t->tm_sec);
+
+  XglUniform4f(ctx->u_date, year, month, day, time);
+}
+
+static void
 draw_frame(context_t *ctx)
 {
   GLfloat surfPos[8] = {
@@ -607,6 +640,9 @@ draw_frame(context_t *ctx)
                 0.5f + sinf(0.125f * m) * 0.4f,
                 0.5f + sinf(0.250f * m) * 0.4f);
   }
+
+  if (ctx->u_date >= 0)
+    update_date_uniform(ctx);
 
   XglClear(GL_COLOR_BUFFER_BIT);
 
@@ -1043,18 +1079,6 @@ parse_cmdline(context_t *ctx, int argc, char *argv[])
       player_usage();
       exit(EXIT_FAILURE);
     }
-  }
-}
-
-static void
-xclock_gettime(clockid_t clk_id, struct timespec *tp)
-{
-  int ret;
-
-  ret = clock_gettime(clk_id, tp);
-  if (ret != 0) {
-      fprintf(stderr, "ERROR: clock_gettime(): error %i: %s\n", errno, strerror(errno));
-      exit(EXIT_FAILURE);
   }
 }
 
