@@ -7,6 +7,11 @@
 
 # Print header
 cat <<END_OF_HEADER
+/*
+ * Automatically converted by st-to-glslsb script from:
+ * https://github.com/jolivain/glslsandbox-player
+ */
+
 #ifdef GL_ES
 precision mediump float;
 #endif
@@ -15,11 +20,33 @@ uniform float time;
 uniform vec2 mouse;
 uniform vec2 resolution;
 
-#define iResolution vec3(resolution, 0.0)
-#define iGlobalTime time
-#define iMouse     vec3(mouse * resolution, 0.0)
-#define iDate      vec4(0.0)
+#define iResolution get_iResolution()
+#define iGlobalTime get_iGlobalTime()
+#define iMouse      get_iMouse()
+#define iDate       get_iDate()
 
+vec3 get_iResolution() {
+  return vec3(resolution, 0.0);
+}
+
+float get_iGlobalTime() {
+  return time;
+}
+
+vec3 get_iMouse() {
+  return vec3(mouse * resolution, 0.0);
+}
+
+vec4 get_iDate() {
+  return vec4(0.0);
+}
+
+// Protect glslsandbox uniform names
+#define time        stemu_time
+#define resolution  stemu_resolution
+#define mouse       stemu_mouse
+
+// --------[ Original ShaderToy begins here ]---------- //
 END_OF_HEADER
 
 # Just pass through the Shadertoy code...
@@ -27,6 +54,7 @@ cat
 
 # Then print the footer
 cat <<END_OF_FOOTER
+// --------[ Original ShaderToy ends here ]---------- //
 
 void main(void)
 {
