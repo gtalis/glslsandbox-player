@@ -16,31 +16,17 @@ cat <<END_OF_HEADER
 precision mediump float;
 #endif
 
+// glslsandbox uniforms
 uniform float time;
 uniform vec2 mouse;
 uniform vec2 resolution;
 uniform vec4 date;
 
-#define iResolution get_iResolution()
-#define iGlobalTime get_iGlobalTime()
-#define iMouse      get_iMouse()
-#define iDate       get_iDate()
-
-vec3 get_iResolution() {
-  return vec3(resolution, 0.0);
-}
-
-float get_iGlobalTime() {
-  return time;
-}
-
-vec3 get_iMouse() {
-  return vec3(mouse * resolution, 0.0);
-}
-
-vec4 get_iDate() {
-  return date;
-}
+// shadertoy globals
+vec3  iResolution;
+float iGlobalTime;
+vec3  iMouse;
+vec4  iDate;
 
 // Protect glslsandbox uniform names
 #define time        stemu_time
@@ -58,8 +44,18 @@ cat
 cat <<END_OF_FOOTER
 // --------[ Original ShaderToy ends here ]---------- //
 
+#undef time
+#undef resolution
+#undef mouse
+#undef date
+
 void main(void)
 {
+  iResolution = vec3(resolution, 0.0);
+  iGlobalTime = time;
+  iMouse = vec3(mouse * resolution, 0.0);
+  iDate = date;
+
   mainImage(gl_FragColor, gl_FragCoord.xy);
 }
 END_OF_FOOTER
