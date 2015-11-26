@@ -17,8 +17,22 @@ if [[ -z "${FRAG_NICK}" ]] ; then
     FRAG_NICK="${FRAGSTR}"
 fi
 
+GS_RE="^(http://(www\.)?glslsandbox\.com/e#)?[0-9]+\.[0-9]+$"
+ST_RE="^(https?://(www\.)?shadertoy\.com/view/)?[0-9a-zA-Z]{6}$"
+
+SHADER_KIND="SHADER_UNKNOWN"
+
+if grep -Eq "${GS_RE}" <<< "${FRAGSTR}" ; then
+    SHADER_KIND="SHADER_GLSLSANDBOX"
+elif grep -Eq "${ST_RE}" <<< "${FRAGSTR}" ; then
+    SHADER_KIND="SHADER_SHADERTOY"
+else
+    echo "ERROR: Shader identifier type not recognized" >&2
+    exit 1
+fi
+
 echo "  {"
-echo "    \"${FRAGSTR}\", \"${FRAG_NICK}\","
+echo "    ${SHADER_KIND}, \"${FRAGSTR}\", \"${FRAG_NICK}\","
 
 sed -r \
     -e 's/\\/\\\\/g' \

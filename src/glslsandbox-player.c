@@ -738,18 +738,6 @@ get_shader_id_by_glslsbid(const char *glslsbid)
 {
   const glslsandbox_shaders_t *s;
   int i;
-  int id, rev;
-  int ret;
-
-  id = 0;
-  rev = 0;
-  ret = sscanf(glslsbid, "%i.%i", &id, &rev);
-  if (ret != 2) {
-    fprintf(stderr, "ERROR: can't read glslsandbox.com id, "
-            "format is [0-9]+.[0-9]+, got \"%s\"\n",
-            glslsbid);
-    exit(EXIT_FAILURE);
-  }
 
   i = 0;
   s = glslsandbox_shaders_g;
@@ -815,7 +803,12 @@ list_shaders_urls(FILE *fp)
 
   s = glslsandbox_shaders_g;
   for (i = 0; s[i].id != NULL; ++i) {
-    fprintf(fp, "http://glslsandbox.com/e#%-14s\t%s\n", s[i].id, s[i].nick);
+    if (s[i].kind == SHADER_GLSLSANDBOX)
+      fprintf(fp, "http://glslsandbox.com/e#%-14s\t%s\n", s[i].id, s[i].nick);
+    else if (s[i].kind == SHADER_SHADERTOY)
+      fprintf(fp, "https://www.shadertoy.com/view/%-6s\t%s\n", s[i].id, s[i].nick);
+    else
+      fprintf(fp, "unknown source: %-14s\t%s\n", s[i].id, s[i].nick);
   }
 }
 

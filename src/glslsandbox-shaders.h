@@ -10,8 +10,15 @@
 #ifndef _GLSLSANDBOX_SHADERS_H_
 #define _GLSLSANDBOX_SHADERS_H_
 
+typedef enum shader_kind_e {
+  SHADER_UNKNOWN = 0,
+  SHADER_GLSLSANDBOX,
+  SHADER_SHADERTOY
+} shader_kind_t;
+
 typedef struct glslsandbox_shaders_s glslsandbox_shaders_t;
 struct glslsandbox_shaders_s {
+  shader_kind_t kind;
   const char *id;
   const char *nick;
   const char *frag;
