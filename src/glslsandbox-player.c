@@ -1469,8 +1469,14 @@ main(int argc, char *argv[])
               glslsandbox_shaders_g[ctx->run_shader].nick,
               glslsandbox_shaders_g[ctx->run_shader].id,
               ctx->run_shader);
-      fprintf(stderr, "Available online at: http://glslsandbox.com/e#%s\n",
-              glslsandbox_shaders_g[ctx->run_shader].id);
+      if (glslsandbox_shaders_g[ctx->run_shader].kind == SHADER_GLSLSANDBOX) {
+        fprintf(stderr, "Available online at: http://glslsandbox.com/e#%s\n",
+                glslsandbox_shaders_g[ctx->run_shader].id);
+      }
+      else if (glslsandbox_shaders_g[ctx->run_shader].kind == SHADER_SHADERTOY) {
+        fprintf(stderr, "Available online at: https://www.shadertoy.com/view/%s\n",
+                glslsandbox_shaders_g[ctx->run_shader].id);
+      }
       fprintf(stderr, "PLEASE make sure to check original license and "
               "give credit to the original author(s).\n");
     }
