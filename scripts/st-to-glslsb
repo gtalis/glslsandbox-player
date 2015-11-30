@@ -6,12 +6,16 @@
 #
 
 # Print header
-cat <<END_OF_HEADER
-/*
- * Automatically converted by st-to-glslsb script from:
- * https://github.com/jolivain/glslsandbox-player
- */
+echo "/*"
+if [ -n "${SHADERTOY_ID}" ] ; then
+    echo " * Original shader from: https://www.shadertoy.com/view/${SHADERTOY_ID}"
+    echo " *"
+fi
+echo " * Automatically converted by st-to-glslsb script"
+echo " */"
+echo
 
+cat <<END_OF_HEADER
 #ifdef GL_ES
 precision mediump float;
 #endif
