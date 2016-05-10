@@ -224,6 +224,8 @@ browser.
      -U <f>: set surfacePosittion animation speed factor
      -W <n>: set window width to n
      -H <n>: set window height to n
+     -x <n>: set window x position to n (if supported)
+     -y <n>: set window y position to n (if supported)
      -B: Enable FBO usage (default to window size)
      -N: Set FBO filtering to NEAREST instead of LINEAR
      -R <n>: set FBO size to the window size divided by n
@@ -313,6 +315,12 @@ command line argument will set the swap interval by calling
 eglSwapInterval(). Some EGL implementation will return a failure if it
 cannot be set. If glslsandbox-player is built with strict EGL/GLES
 error checking (which is the default), it will abort execution.
+
+  Window position command line arguments (-x/-y) are passed to the
+native windowing system.  Not all windowing systems are supporting
+window positioning and could be silently ignored.  Other windowing
+systems may also use those values as a hint and may not exactly honor
+the requested values.
 
 
 Additional Features not Present in GLSL Sandbox
