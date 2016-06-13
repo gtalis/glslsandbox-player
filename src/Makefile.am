@@ -6,6 +6,11 @@ LDADD = \
 	${egl_LIBS} ${glesv2_LIBS} \
 	${x11_LIBS} -lm -lpng
 
+if ENABLE_WL
+AM_CFLAGS += ${wayland_client_CFLAGS} ${wayland_egl_CFLAGS}
+LDADD += ${wayland_client_LIBS} ${wayland_egl_LIBS}
+endif
+
 GEN_SHADER_IDS = $(top_srcdir)/scripts/gen-shader-ids
 DL_SHADER = $(top_srcdir)/scripts/dl-shader
 FRAG2INC = $(top_srcdir)/scripts/frag2inc
@@ -51,6 +56,10 @@ endif
 
 if ENABLE_RPI
 glslsandbox_player_SOURCES += native_gfx_rpi.c
+endif
+
+if ENABLE_WL
+glslsandbox_player_SOURCES += native_gfx_wl.c
 endif
 
 nodist_glslsandbox_player_SOURCES = glslsandbox-shaders.c
